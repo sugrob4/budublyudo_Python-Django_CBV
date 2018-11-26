@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}{{ meta.title }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ meta.metakey }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ meta.metadesc }}{% endblock %}" />
+{% block contacts %}
+<div class="contacts">
+    <h3>Форма обратной связи</h3>
+    <div class="contacts_image">
+        <img src="{% static 'images/img_site/logo_top_left.png' %}">
+        {% if messages %}
+            {% for m in messages %}
+                {% if 'sendemail' in m.tags %}
+                    <p class="send_mail">{{ m }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <p>Письмо для администрации сайта можно послать здесь, заполнив форму ниже.</p>
+    </div>
+    <div class="contacts_form">
+        <form id="formID" action="{% url 'contacts' %}" method="post">
+        {% csrf_token %}
+            <fieldset>
+                {% if form.errors %}
+                    <p style="color: #ea2e1c;">
+                        Пожалуйста, исправьте ошибку {{ form.errors|pluralize }} ниже.
+                    </p>
+                {% endif %}
+                <label>
+                    <strong><br />{{ form.subject.errors }}</strong>
+                    <span>Тема сообщения:</span>
+                    {{ form.subject }}
+                </label>
+                <label>
+                    <strong><br />{{ form.email.errors }}</strong>
+                    <span>Введите email адрес:</span>
+                    {{ form.email }}
+                </label>
+                <label>
+                    <strong><br />{{ form.message.errors }}</strong>
+                    <span>Введите сообщение:</span>
+                    {{ form.message }}
+                </label>
+                <input type="submit" id="sub_but" class="sub_but" value="Отправить" />
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+{% load static %}
+{% load thumbnail %}
+<title>{% block title %}{{ cat_krohi.category_name }}{{ cur_page }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ cat_krohi.metakey }}{{ cur_page }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ cat_krohi.metadesc }}{{ cur_page }}{% endblock %}" />
+{% block categories %}
+<p id="krohi">
+    <a href="{{ '/' }}">Главная</a>&nbsp;&gt;&gt;&gt;&nbsp;<span>{{ cat_krohi.category_name }}</span>
+</p>
+<div id="block_category">
+{% if articles %}
+{% for a in articles %}
+    {% if forloop.counter|add:"-1"|divisibleby:"2" %}
+        <div id="category_left">
+            <div id="cat_img_left">
+                {% if not a.image %}
+                    <img class="block_popular_img"
+                         src="{% static 'images/img_site/no_image_povaryonok.png' %}"
+                         alt="no_image"/>
+                {% else %}
+                    <img src="{% thumbnail a.image 220x220 crop="center" %}" alt="{{ a.image|cut:'img_article/'|cut:'.png' }}" />
+                {% endif %}
+            </div>
+            <img class="cat_border_left"
+                 src="{% static 'images/img_site/category_block_border_right.png' %}"
+                 alt="category_block_border" />
+            <div id="cat_content_left">
+                <h3><a href="{% url 'detail' cat_krohi.category_link a.id a.article_link %}">
+                    {{ a.article_title }}</a></h3>
+                {{ a.article_anons | truncatewords_html:30 }}
+                <a href="{% url 'detail' cat_krohi.category_link a.id a.article_link %}"
+                   class="button_category">Читать всё</a>
+            </div>
+        </div>
+    {% else %}
+        <div id="category_right">
+            <div id="cat_img_right">
+                {% if not a.image %}
+                    <img class="block_popular_img"
+                         src="{% static 'images/img_site/no_image_povaryonok.png' %}"
+                         alt="no_image"/>
+                {% else %}
+                    <img src="{% thumbnail a.image 220x220 crop="center" %}" alt="{{ a.image|cut:'img_article/'|cut:'.png' }}" />
+                {% endif %}
+            </div>
+            <img class="cat_border_right"
+                 src="{% static 'images/img_site/category_block_border_left.png' %}"
+                 alt="category_block_border" />
+            <div id="cat_content_right">
+                <h3><a href="{% url 'detail' cat_krohi.category_link a.id a.article_link %}">
+                    {{ a.article_title }}</a></h3>
+                {{ a.article_anons | truncatewords_html:30 }}
+                <a href="{% url 'detail' cat_krohi.category_link a.id a.article_link %}"
+                   class="button_category">Читать всё</a>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+<ul id="pagination">
+{% if articles.paginator.num_pages > 1 %}
+    {% if articles.has_previous %}
+        <li><a href="{% url 'cat' cat_krohi.category_link %}">В начало</a></li>
+        {% if articles.number == 2 %}
+            <li><a href="{% url 'cat' cat_krohi.category_link %}">&laquo;</a></li>
+        {% else %}
+            <li><a href="page={{ articles.previous_page_number }}">&laquo;</a></li>
+        {% endif %}
+    {% endif %}
+    {% for page in articles.paginator.page_range %}
+        {% if page == articles.number %}
+            <li class="current">{{ page }}</li>
+        {% else %}
+            {% if page == 1 %}
+                <li><a href="{% url 'cat' cat_krohi.category_link %}">{{ page }}</a></li>
+            {% else %}
+                <li><a href="page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% if articles.has_next %}
+        <li><a href="page={{ articles.next_page_number }}">&raquo;</a></li>
+        {% if articles.paginator.num_pages %}
+            <li><a href="page={{ articles.paginator.num_pages }}">В конец</a></li>
+        {% endif %}
+    {% endif %}
+{% endif %}
+</ul>
+{% else %}
+    <p>Материалов по данной категории нет!</p>
+{% endif %}
+{% endblock %}

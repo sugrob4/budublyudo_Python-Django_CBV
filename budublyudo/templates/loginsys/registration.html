@@ -1,0 +1,59 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}Система регистрации пользователей сайта | budublyudo{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}регистрация пользователя budublyudo, регистрация нового пользователя, зарегестрироваться на сайте{% endblock %}" />
+<meta name="description" content="{% block description %}На этой странице, пользователям, желающим пройти регистрацию понадобиться заполнить небольшую форму, для последующего входа на сайт под своим логином.{% endblock %}" />
+{% block registration %}
+{% if reg %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            window.location = '#{{ reg }}'
+        });
+    </script>
+{% endif %}
+<a name="reg"></a>
+<div id="registration">
+    <div id="block_reg">
+        <h3>Регистрация</h3>
+        {% if not request.session.success_message %}
+            <form action="{% url 'registration' %}" method="post">
+                {% csrf_token %}
+                <fieldset id="table_reg">
+                    <ul>
+                        <li>
+                            {{ form.errors.username }}
+                            <img src="{% static 'images/img_site/login_img.png' %}" alt="login_img" />
+                            <input type="text" name="username" placeholder="Введите ваш логин" value=""/>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            {{ form.errors.email }}
+                            <img src="{% static 'images/img_site/email_img.png' %}" alt="email_img" />
+                            <input type="text" name="email" placeholder="Введите ваш e-mail" value=""/>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            {{ form.errors.password1 }}
+                            <img src="{% static 'images/img_site/password_img.png' %}" alt="password_img" />
+                            <input type="password" name="password1" placeholder="Пароль" />
+                        </li>
+                    </ul>
+                    <ul>
+                        <li>
+                            {{ form.errors.password2 }}
+                            <img src="{% static 'images/img_site/retry_password_img.png' %}"
+                                 alt="retry_password_img" />
+                            <input type="password" name="password2" placeholder="Повторите пароль" />
+                        </li>
+                    </ul>
+                </fieldset>
+                <input id="inpreg" type="submit" value="Зарегестрироваться" name="submit" />
+            </form>
+        {% else %}
+            <div class="success_message"><p>{{ request.session.success_message }}</p></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

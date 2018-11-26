@@ -1,0 +1,61 @@
+{% load staticfiles %}
+{% load static %}
+<div class="side_bar">
+    <div class="categories">
+        <h3>Рубрики</h3>
+        <ul class="cat_name">
+        {% for c in cat %}
+            <li>
+                <a href="{% url 'cat' c.category_link %}">{{ c.category_name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <a name="ret"></a>
+    <div class="search">
+        <img src="{% static "images/img_site/search_img.png" %}" alt="search_img" />
+        <span class="title_search">Поиск по сайту</span>
+        {% if messages %}
+            {% for m in messages %}
+                {% if 'search' in m.tags %}
+                <p style="color: red;">{{ m }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+            <p>Введите слово или фразу :</p>
+        <form action="{% url 'search' %}" method="get">
+            <input type="text" name="q" title="Введите слово или фразу" value="" />
+            <input type="submit" value="Искать"/>
+        </form>
+    </div>
+    <div class="autorization">
+        {% if request.user.is_authenticated %}
+            <div class="user_authenticate">
+                 <a href="{% url 'logout' %}">Выйти {{ request.user }}</a>
+            </div>
+        {% else %}
+            <span id="span_auth">Авторизация:</span>
+            <form action="{% url 'login' %}" method="post" id="auth">
+            {% csrf_token %}
+                <input type="text" name="username" class="login" id="username" placeholder="Ваш логин:" value=""/>
+                <br />
+                <input type="password" class="password" name="password" id="password"  placeholder="Ваш пароль:" value=""/>
+                <br />
+            <p class="background_buttton">
+                <input type="submit" class="autorization_but" name="auth" value="Войти">
+            </p>
+            </form>
+            <p class="back_butt_a"><a href="{% url 'registration' %}" class="register">Регистрация</a></p>
+        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if 'login' in message.tags %}
+            <div style="color:red;margin-top:1em;font-size:1.1em;text-align:center;
+                        background-color:#f5ecdc;">
+                {{ message }}
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    </div>
+</div>

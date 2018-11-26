@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}{{ about.title }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ about.metakey }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ about.metadesc }}{% endblock %}" />
+{% block aboutsite %}
+<div class="aboutsite">
+    <h3>Страница о сайте</h3>
+    {{ about.page_text }}
+</div>
+{% endblock %}

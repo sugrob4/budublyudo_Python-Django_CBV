@@ -1,0 +1,75 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}{{ meta.title }}{{ cur_page }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ meta.metakey }}{{ cur_page }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ meta.metadesc }}{{ cur_page }}{% endblock %}" />
+{% block recipes %}
+{% load static %}
+{% load thumbnail %}
+<div class="recipes_page">
+    <p id="krohi">
+        <a href="{{ '/' }}">Главная</a>&nbsp;>>>&nbsp;<span>Рецепты</span>
+    </p>
+    <h3>Рецепты</h3>
+    {% if recipes %}
+        {% for r in recipes %}
+            <div class="block_page_recipe">
+                <div class="page_recipe_img">
+                    <div class="img_recepe_info">
+                        <div class="recipe_front">
+                            <a href="{% url 'detail' r.category_article.category_link r.id r.article_link %}">
+                                {% if not r.image %}
+                                    <img class="block_popular_img" src="
+{% static 'images/img_site/no_image_povaryonok.png' %}" alt="recipe_img"/>
+                                {% else %}
+                                    <img src="{% thumbnail r.image 140x140 crop="center" %}"
+                                         alt="{{ r.image|cut:'img_article/'|cut:'.png' }}"/>
+                                {% endif %}
+                            </a>
+                        </div>
+                        <div class="recipe_back">
+                            <a href="{% url 'detail' r.category_article.category_link r.id r.article_link %}">
+                                Смотреть</a>
+                        </div>
+                    </div>
+                </div>
+                <h2>{{ r.article_title }}</h2>
+                {{ r.article_anons|truncatewords_html:15 }}
+                <a href="{% url 'detail' r.category_article.category_link r.id r.article_link %}"
+                   class="read_more_recipe">Читать далее</a>
+            </div>
+        {% endfor %}
+        <ul id="pagination" class="pagin_recipes">
+            {% if recipes.paginator.num_pages > 1 %}
+                {% if recipes.has_previous %}
+                    <li><a href="{% url 'recipes' %}">В начало</a></li>
+                    {% if recipes.number == 2 %}
+                        <li><a href="{% url 'recipes' %}">&laquo;</a></li>
+                    {% else %}
+                        <li><a href="page={{ recipes.previous_page_number }}">&laquo;</a></li>
+                    {% endif %}
+                {% endif %}
+                {% for page in recipes.paginator.page_range %}
+                    {% if page == recipes.number %}
+                        <li class="current">{{ page }}</li>
+                    {% else %}
+                        {% if page == 1 %}
+                            <li><a href="{% url 'recipes' %}">{{ page }}</a></li>
+                        {% else %}
+                            <li><a href="page={{ page }}">{{ page }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% if recipes.has_next %}
+                    <li><a href="page={{ recipes.next_page_number }}">&raquo;</a></li>
+                    {% if recipes.paginator.num_pages %}
+                        <li><a href="page={{ recipes.paginator.num_pages }}">В конец</a></li>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        </ul>
+    {% else %}
+        <p>Рецептов, с такими данными нет!</p>
+    {% endif %}
+</div>
+{% endblock %}

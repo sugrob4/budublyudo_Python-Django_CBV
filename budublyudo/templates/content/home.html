@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+{% load static %}
+{% load thumbnail %}
+<title>{% block title %}{{ meta.title }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ meta.metakey }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ meta.metadesc }}{% endblock %}" />
+{% block home %}
+<div class="popular">
+    <h3>Разное</h3>
+    {% for v in various %}
+        <div class="block_popular">
+            <div class="content_popular">
+                {% if not v.image %}
+                    <img class="block_popular_img"
+                         src="{% static 'images/img_site/no_image_povaryonok.png' %}"
+                         alt="no_image"/>
+                {% else %}
+                    <img class="block_popular_img"
+                         src="{% thumbnail v.image 220x220 crop="center" %}"
+                         alt="{{ v.image }}"/>
+                {% endif %}
+                <h4><a href="{% url 'detail' v.category_article.category_link v.id v.article_link %}">
+                    {{v.article_title}}</a></h4>
+                {{ v.article_anons|truncatewords_html:18 }}
+                <div class="popular_button_div">
+                    <a href="{% url 'detail' v.category_article.category_link v.id v.article_link %}"
+                       class="popular_button">Читать</a>
+                </div>
+            </div>
+            <img class="popular_shadow"
+                 src="{% static 'images/img_site/popular_shadow.png' %}"
+                 alt="popular_shadow" />
+        </div>
+    {% endfor %}
+</div>
+<div class="new_receptions">
+    <h3>Новые рецепты</h3>
+    {% for r in recipes %}
+        <div class="block_recept">
+            <div class="recept_img tada wow">
+                <a href="{% url 'detail' r.category_article.category_link r.id r.article_link %}">
+                    {% if not r.image %}
+                        <img class="block_popular_img"
+                             src="{% static 'images/img_site/no_image_povaryonok.png' %}"
+                             alt="no_image"/>
+                    {% else %}
+                        <img src="{% thumbnail r.image 140x140 crop="center" %}" alt="{{ r.image }}" />
+                    {% endif %}
+                </a>
+            </div>
+            <h3>{{ r.article_title }}</h3>
+            {{ r.article_anons|truncatewords_html:15 }}
+            <a href="{% url 'detail' r.category_article.category_link r.id r.article_link %}"
+               class="read_more">Читать далее...</a>
+        </div>
+    {% endfor %}
+    <div class="but_new_rec">
+        <a href="{% url 'recipes' %}">Читать все рецепты</a>
+    </div>
+</div>
+{% endblock home %}

@@ -1,0 +1,45 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="author" content="Aleksey (Mordechai) Povar" />
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="keywords" content="{% block keywords %}{% endblock %}" />
+    <meta name="description" content="{% block description %}{% endblock %}" />
+    <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" media="screen"/>
+    <script type="text/javascript" src="{% static "js/jquery-3.3.1.js" %}"></script>
+    <link rel="shortcut icon" href="{%  static "images/img_site/favicon.ico" %}">
+</head>
+<body onload="init();">
+<div class="karkas">
+{% autoescape off %}
+{% load master_tags %}
+{# header #}
+{% header_obj %}
+{# header #}
+<div class="content_main">
+{# sidebar  #}
+{% side_menu %}
+{# sidebar  #}
+    <div class="content">
+    {% block home %}{% endblock %}
+    {% block categories %}{% endblock %}
+    {% block view_detailed %}{% endblock %}
+    {% block registration %}{% endblock %}
+    {% block recipes %}{% endblock %}
+    {% block search %}{% endblock %}
+    {% block aboutsite %}{% endblock %}
+    {% block contacts %}{% endblock %}
+    {% block sitemap %}{% endblock %}
+    </div>
+</div>
+{# footer #}
+{% include 'inc/footer.html' %}
+{# footer #}
+</div>
+{% endautoescape %}
+</body>
+</html>

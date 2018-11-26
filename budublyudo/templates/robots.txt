@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin
+Disallow: /ckeditor
+Disallow: /ckeditor_uploader
+Disallow: /suit
+Disallow: /cms
+Disallow: /filebrowser
+
+Sitemap: https://budublyudo.com/sitemap.xml
+Host: https://budublyudo.com

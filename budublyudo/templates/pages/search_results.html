@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}Поиск по сайту | budublyudo{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}результаты поиска | budublyudo{% endblock %}" />
+<meta name="description" content="{% block description %}результаты поиска по сайту | budublyudo{% endblock %}" />
+{% block search %}
+{% load thumbnail %}
+<div id="block_category">
+{% if object_list %}
+<h3 class="search_title">Результаты поиска "{{ request.GET.q }}"</h3>
+{% for a in object_list %}
+    {% if forloop.counter|add:"-1"|divisibleby:"2" %}
+        <div id="category_left">
+            <div id="cat_img_left">
+                {% if not a.image %}
+                    <img class="block_popular_img" src="
+{% static 'images/img_site/no_image_povaryonok.png' %}" alt="category_img"/>
+                {% else %}
+                    <img src="{% thumbnail a.image 220x220 crop="center" %}" alt="{{ a.image }}" />
+                {% endif %}
+            </div>
+            <img class="cat_border_left" src="
+{% static 'images/img_site/category_block_border_right.png' %}" alt="category_block_border" />
+            <div id="cat_content_left">
+                <h3><a href="">{{ a.article_title }}</a></h3>
+                <p>{{ a.article_anons | truncatewords_html:30 }}</p>
+                <a href="" class="button_category">Читать всё</a>
+            </div>
+        </div>
+    {% else %}
+        <div id="category_right">
+            <div id="cat_img_right">
+                {% if not a.image %}
+                    <img class="block_popular_img" src="
+{% static 'images/img_site/no_image_povaryonok.png' %}" alt="category_img"/>
+                {% else %}
+                    <img src="{% thumbnail a.image 220x220 crop="center" %}" alt="{{ a.image }}" />
+                {% endif %}
+            </div>
+            <img class="cat_border_right" src="
+{% static 'images/img_site/category_block_border_left.png' %}" alt="category_block_border" />
+            <div id="cat_content_right">
+                <h3><a href="">{{ a.article_title }}</a></h3>
+                <p>{{ a.article_anons | truncatewords_html:30 }}</p>
+                <a href="" class="button_category">Читать всё</a>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+</div>
+{% if is_paginated %}
+<ul id="pagination">
+    {% if paginator.num_pages > 1 %}
+        {% if page_obj.has_previous %}
+            <li><a href="?q={{ request.GET.q }}&page=1">В начало</a></li>
+            <li><a href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+        {% endif %}
+        {% for page in paginator.page_range %}
+            {% if page == page_obj.number %}
+                <li class="current">{{ page }}</li>
+            {% else %}
+                <li><a href="?q={{ request.GET.q }}&page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li><a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% if paginator.num_pages %}
+                <li><a href="?q={{ request.GET.q }}&page={{ paginator.num_pages }}">В конец</a></li>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</ul>
+{% endif %}
+{% else %}
+    <p>По заданным критериям поиска, материала нет!</p>
+{% endif %}
+{% endblock %}

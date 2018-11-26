@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {# Load CSS and JavaScript #}
+        {% load staticfiles %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/normalize.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/manager.css' %}" media="screen" />
+        <title>{{ 'Хранилище изображений' }}</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="fluid">
+                <h1>{{ 'Хранилище изображений' }}</h1>
+            </div>
+            <div class="download_img">
+                <form action="{% url 'image_uploader' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset>
+                        <ul>
+                            <li><input type="file" name="upload" value="Обзор"></li>
+                            <li><input type="submit" value="Загрузить на сервер"></li>
+                        </ul>
+                    </fieldset> 
+                </form>
+            </div>
+            <div class="colmd">
+                {% for item in data  %}
+                    <div class="thumbnail">
+                        <img class="responsive" src="{{ item.image.url }}" alt="{{ item.image.name }}">
+                        <p>{{ item.image.name }}</p>
+                        <div class="caption">
+                            <a class="choose" data-url="{{ item.image.url }}" role="button">
+                                {{ 'Выбрать' }}
+                            </a>
+                        </div>
+                    </div>
+                {% empty %}
+                    <h3>{{ 'В настоящее время пусто' }}</h3>
+                {% endfor %}
+            </div>
+            <script src="{% static 'js/jquery-1.12.1.min.js' %}"></script>
+            <script>
+                jQuery(document).ready(function ($) {
+                    $('.choose').click(function(){
+                        var url = $(this).attr('data-url');
+                        window.opener.CKEDITOR.tools.callFunction({{ callback }},url);
+                        window.close();
+                    });
+                });
+            </script>
+        </div>
+    </body>
+</html>

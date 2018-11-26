@@ -1,0 +1,71 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}{{ object.article_title }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ object.metakey }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ object.metadesc }}{% endblock %}" />
+{% block view_detailed %}
+{% if object %}
+<p id="krohi">
+<a href="{% url 'home' %}">Главная</a>&nbsp;&gt;&gt;
+    <a href="{% url 'cat' object.category_article.category_link  %}">
+        {{ object.category_article.category_name }}
+    </a>&gt;&gt;
+    <span>{{ object.article_title }}</span>
+</p>
+<div id="view_detailed">
+    <h1>{{ object.article_title }}</h1>
+    {{ object.article_text }}
+    <p align="right" class="date_detailed">{{ object.article_date|date:"d E Y" }}</p>
+</div>
+<div class="comments_form">
+    <a name="comment"></a>
+    <form id="formID" method="post"
+          action="{% url 'add_comment' object.id %}">
+    {% csrf_token %}
+        <table>
+            <tr>
+                <td class="value">Имя:</td>
+                <td>
+                    <input class="name_comm" type="text" name="user_name" placeholder="Введите ваше имя">
+                </td>
+            </tr>
+            <tr>
+                <td class="value">Коментарий:&nbsp;&nbsp;</td>
+                <td>
+                    <textarea class="text_name_comm" name="comments_text" rows="4" placeholder="Текст..."></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td class="value">Я робот:</td>
+                <td>
+                    <input type="checkbox" name="but" title="уберите галочку" id="but" checked="checked">
+                    {% if "e" in request.session %}
+                        <span style="color: red">Если вы не робот, тогда снимите галочку</span>
+                    {% else %}
+                        <span>&nbsp;(для подтверждения того что вы являетесь человеком, уберите галочку)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" class="sub_comm" value="Добавить коментарий"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+{% for c in get_comment %}
+    <div class="user_comments">
+        <p class="name_date_comm">
+            <img src="{% static 'images/img_site/com_user_face.png' %}" alt="Фото пользователя">
+            <span class="username_comm">{{ c.user_name }}</span>
+            <span class="date_comm">{{ c.comment_date | date:'d.m.Y' }}
+                <span>{{ c.comment_date | time:'H:i' }}</span>
+            </span>
+        </p>
+        <p class="comm_text">{{ c.comments_text }}</p>
+    </div>
+{% endfor %}
+{% else %}
+    <p>Статей и рецептов с таими параметрами, не существует!</p>
+{% endif %}
+{% endblock %}

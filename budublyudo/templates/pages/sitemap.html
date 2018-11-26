@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+<title>{% block title %}{{ meta.title }}{% endblock %}</title>
+<meta name="keywords" content="{% block keywords %}{{ meta.metakey }}{% endblock %}" />
+<meta name="description" content="{% block description %}{{ meta.metadesc }}{% endblock %}" />
+{% block sitemap  %}
+<div id="sitemap">
+    <h1>Карта сайта</h1>
+    {% for p in pages %}
+        {% if p.page_link == 'home' %}
+            <span class="rubrics"><a href="{{ '/' }}">{{ p.title }}</a></span>
+        {% else %}
+            <span class="rubrics"><a href="{% url p.page_link %}">{{ p.title }}</a></span>
+        {% endif %}
+    {% endfor %}
+    <ul id="name_category">
+    {% for c in cat %}
+        <li class="sitemap_category_name">
+            <a href="{% url 'cat' c.category_link %}">
+                {{ c.category_name }}
+            </a>
+        </li>
+        <ul id="name_recipe">
+        {% for a in c.articles_set.all %}
+            <li>
+                <a href="{% url 'detail' a.category_article.category_link a.id a.article_link %}">
+                    {{ a.article_title }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
